@@ -1,11 +1,24 @@
 import createPoolDatabase from "../config/connectDatabase";
+import { productDetailDto } from "../models/products/product.helper";
 
-let query = `INSERT INTO products (PRODUCT_NAME, PRODUCT_BRAND, PRODUCT_TYPE,
-        PRODUCT_PRICE, PRODUCT_AMOUNT, PRODUCT_DISCOUNT, FREESHIP, RATING, PRODUCT_IMG, DEL_FLG)
-        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+const queryGetAll = `CALL get_all_products()`;
 
-const productsController = {
-    createProduct: (req, res) => {
+const queryCreate = `CALL create_new_product(?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+const queryGetDetail = `CALL get_detail_product(?)`;
+
+const queryDelete = `UPDATE products_list SET DEL_FLG = 1 WHERE PRODUCT_ID = ?`;
+
+class ProductsController {
+    getDataTablePage = async (req, res) => {
+        res.status(200).render("basic-table.ejs");
+    };
+
+    getAllProducts = async (req, res) => {
+        const [results, fields] = await createPoolDatabase.query(queryGetAll);
+        res.json(results[0]);
+    };
+    createProduct = async (req, res) => {
         const {
             productName,
             productBrand,
@@ -16,33 +29,36 @@ const productsController = {
             freeShip,
             rating,
             productImg,
-        } = req;
-        try {
-            createPoolDatabase.query(
-                query,
-                [
-                    productName,
-                    productBrand,
-                    productType,
-                    productPrice,
-                    productAmount,
-                    discount,
-                    freeShip,
-                    rating,
-                    productImg,
-                    0,
-                ],
-                function (error, results, fields) {
-                    // res.render("success");
-                    console.log(req.body);
-                    console.log(query);
-                    res.send('sucess');
-                }
-            );
-        } catch (e) {
-            console.log(e);
-        }
-    },
-};
-
+        } = req.body;
+        const [results, fields] = await createPoolDatabase.query(queryCreate, [
+            productName,
+            productBrand,
+            productType,
+            productPrice,
+            productAmount,
+            discount,
+            freeShip,
+            rating,
+            productImg,
+        ]);
+        res.json(results);
+        // res.redirect("/");
+    };
+    getDetailProduct = async (req, res) => {
+        const [results, fields] = await createPoolDatabase.query(
+            queryGetDetail,
+            [req.params.productID]
+        );
+        const product = results ? results[0][0] : {};
+        res.status(200).json(product);
+        // res.json(product);
+    };
+    deleteProduct = async (req, res) => {
+        const [results, fields] = await createPoolDatabase.query(queryDelete, [
+            req.body.productID,
+        ]);
+        res.json(results);
+    };
+}
+const productsController = new ProductsController();
 export default productsController;

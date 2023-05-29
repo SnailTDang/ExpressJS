@@ -18,5 +18,6 @@ initWebRoutes(app);
 let port = process.env.PORT || 8080;
 
 app.listen(port, HOST_NAME, () => {
+    console.log(port);
     console.log("backend express is running");
 });

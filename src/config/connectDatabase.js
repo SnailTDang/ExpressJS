@@ -1,6 +1,6 @@
 // import { Sequelize } from "sequelize";
 require("dotenv").config();
-import mysql from "mysql2";
+import mysql from "mysql2/promise";
 
 const createPoolDatabase = mysql.createPool({
     host: process.env.HOST_NAME_DB,

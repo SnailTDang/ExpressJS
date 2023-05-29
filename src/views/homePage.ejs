@@ -129,7 +129,44 @@
                                 <th>Số lượng</th>
                                 <th>Action</th>
                             </thead>
-                            <tbody id="tblDanhSachSP"></tbody>
+                            <tbody id="tblDanhSachSP">
+                                <% listProducts.forEach((item, index)=>{%>
+                                <tr>
+                                    <td><%= ++index %></td>
+                                    <td><%= item.productName %></td>
+                                    <td><%= item.productPrice %>₫</td>
+                                    <td style="text-align: center">
+                                        <img
+                                            src="<%= item.productImg %>"
+                                            style="
+                                                width: 70px;
+                                                height: 70px;
+                                                object-fit: contain;
+                                            "
+                                            alt=""
+                                        />
+                                    </td>
+                                    <td><%= item.productAmount%></td>
+                                    <td style="text-align: center">
+                                        <button
+                                            class="btn btn-danger"
+                                            onclick="deleteProduct('<%= item.productID%>')"
+                                        >
+                                            Xóa
+                                        </button>
+                                        <button
+                                            onclick="getDetailProduct('<%= item.productID%>')"
+                                            class="btn btn-info"
+                                            data-toggle="modal"
+                                            data-target="#myModal"
+                                            type="submit"
+                                        >
+                                            Xem
+                                        </button>
+                                    </td>
+                                </tr>
+                                <%})%>
+                            </tbody>
                         </table>
                         <!-- END TABLE SẢN PHẨM -->
                     </div>
@@ -141,161 +178,9 @@
             <!--KetThuc Tabmenu-->
 
             <!-- The Modal -->
-            <div class="modal fade bd-example-modal-lg" id="myModal">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <!-- Modal Header -->
-                        <form id="myForm">
-                            <div class="modal-header">
-                                <h4 class="modal-title">Modal Heading</h4>
-                                <button
-                                    type="button"
-                                    class="close"
-                                    data-dismiss="modal"
-                                >
-                                    &times;
-                                </button>
-                            </div>
-                            <!-- Modal body -->
-                            <div class="modal-body">
-                                <div class="row">
-                                    <div class="col col-6">
-                                        <div class="form-group">
-                                            <label>Tên Sản Phẩm</label>
-                                            <input
-                                                id="TenSP"
-                                                name="productName"
-                                                class="form-control"
-                                                placeholder="Nhập vào tên sản phẩm"
-                                            />
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Tên Hãng</label>
-                                            <input
-                                                id="hangSP"
-                                                name="productBrand"
-                                                class="form-control"
-                                                placeholder="Nhập vào tên hãng"
-                                            />
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Loại sản phẩm</label>
-                                            <input
-                                                id="loaiSP"
-                                                name="productType"
-                                                class="form-control"
-                                                placeholder="Nhập vào tên loại hàng"
-                                            />
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Giá</label>
-                                            <input
-                                                id="GiaSP"
-                                                name="productPrice"
-                                                type="number"
-                                                min="0"
-                                                class="form-control"
-                                                placeholder="Nhập vào giá"
-                                            />
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Kho hàng</label>
-                                            <input
-                                                id="khoSP"
-                                                name="productAmount"
-                                                type="number"
-                                                min="0"
-                                                class="form-control"
-                                                placeholder="Nhập vào mô tả sản phẩm"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div class="col col6">
-                                        <div class="form-group">
-                                            <div class="form-group">
-                                                <label>Khuyến mãi</label>
-                                                <input
-                                                    id="kmSP"
-                                                    name="discount"
-                                                    type="number"
-                                                    class="form-control"
-                                                    placeholder="Nhập vào khuyến mãi"
-                                                />
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="">Shipping</label>
-                                                <select
-                                                    class="form-control member-form"
-                                                    id="freeShip"
-                                                    name="freeShip"
-                                                >
-                                                    <option
-                                                        value="none"
-                                                        selected=""
-                                                        disabled=""
-                                                    >
-                                                        Chọn Freeship
-                                                    </option>
-                                                    <option value="1">
-                                                        Freeship
-                                                    </option>
-                                                    <option value="0">
-                                                        No Freeship
-                                                    </option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Đánh giá</label>
-                                                <label>Số sao</label>
-                                                <input
-                                                    id="star"
-                                                    name="rating"
-                                                    type="number"
-                                                    class="form-control rate-input"
-                                                    placeholder="Nhập vào số sao"
-                                                    max="5"
-                                                    min="0"
-                                                />
-                                            </div>
-                                            <div class="form-group">
-                                                <label>Số bình luận</label>
-                                                <input
-                                                    id="comments"
-                                                    type="text"
-                                                    class="form-control rate-input"
-                                                    placeholder="Nhập vào số bình
-                                                luận"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Hình Ảnh</label>
-                                            <input
-                                                id="hinhSP"
-                                                name="productImg"
-                                                type="text"
-                                                class="form-control"
-                                                placeholder="Nhập vào hình sản phẩm"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Modal footer -->
-                            <div class="modal-footer"></div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+            
         </div>
-        <div class="container"></div>
-        <img src="" alt="" />
-
-        <script
-            src="https://code.jquery.com/jquery-3.3.1.min.js"
-            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-            crossorigin="anonymous"
-        ></script>
+        <%- include('./libary/jQuery.ejs') %>
         <script
             src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
             integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
@@ -309,10 +194,55 @@
         <script src="https://code.highcharts.com/highcharts.js"></script>
         <script src="https://code.highcharts.com/modules/series-label.js"></script>
         <script src="https://code.highcharts.com/modules/exporting.js"></script>
-        <!-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-        <script src="../services/ProductServices.js"></script>
-        <script src="../models/products.js"></script>
-        <script src="../controllers/main.js"></script> -->
         <script src="/js/main.js"></script>
+        <script>
+            function getDetailProduct(id) {
+                $.ajax({
+                    url: `http://localhost:8080/detail-product/${id}`,
+                    method: "GET",
+                    dataType: "JSON",
+                    success: function (data) {
+                        const {
+                            productID,
+                            productName,
+                            productPrice,
+                            productImg,
+                            productAmount,
+                            rating,
+                            discount,
+                            freeShip,
+                            productBrand,
+                            productType,
+                        } = data;
+                        $("#productName").val(productName);
+                        $("#productPrice").val(productPrice);
+                        $("#productImg").val(productImg);
+                        $("#freeShip").val(freeShip);
+                        $("#productBrand").val(productBrand);
+                        $("#productType").val(productType);
+                        $("#productAmount").val(productAmount);
+                        $("#rating").val(rating);
+                        $("#discount").val(discount);
+                        $("#myModal .modal-footer").html(`
+                        <button onclick="updateProduct('${productID}')" type="button" 
+                        class="btn btn-success" id="capnhatSP">
+                        Cập nhật sản phẩm
+                        </button>`);
+                    },
+                });
+            }
+            function deleteProduct(id) {
+                $.ajax({
+                    url: `http://localhost:8080/delete-product`,
+                    method: "PUT",
+                    data: { productID: id },
+                    dataType: "JSON",
+                    success: function (data) {
+                        window.location.reload();
+                    },
+                });
+            }
+            // });
+        </script>
     </body>
 </html>

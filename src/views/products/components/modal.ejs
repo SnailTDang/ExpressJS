@@ -1,0 +1,150 @@
+<div class="modal fade bd-example-modal-lg" id="myModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <form id="myForm">
+                <div class="modal-header">
+                    <h4 class="modal-title">Modal Heading</h4>
+                    <button type="button" class="close" data-dismiss="modal">
+                        &times;
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col col-6">
+                            <div class="form-group">
+                                <label>Tên Sản Phẩm</label>
+                                <input
+                                    id="productName"
+                                    name="productName"
+                                    class="form-control"
+                                    placeholder="Nhập vào tên sản phẩm"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label>Tên Hãng</label>
+                                <input
+                                    id="productBrand"
+                                    name="productBrand"
+                                    class="form-control"
+                                    placeholder="Nhập vào tên hãng"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="">Loại sản phẩm</label>
+                                <select
+                                    class="form-control member-form"
+                                    id="productType"
+                                    name="productType"
+                                >
+                                    <option
+                                        value="none"
+                                        selected=""
+                                        disabled=""
+                                    >
+                                        Chọn Loại Sản Phẩm
+                                    </option>
+                                    <option value="1">SmartPhone</option>
+                                    <option value="2">Tablet</option>
+                                    <option value="3">Laptop</option>
+                                    <option value="4">Desktop/PC</option>
+                                    <option value="5">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Giá</label>
+                                <input
+                                    id="productPrice"
+                                    name="productPrice"
+                                    type="number"
+                                    min="0"
+                                    class="form-control"
+                                    placeholder="Nhập vào giá"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label>Kho hàng</label>
+                                <input
+                                    id="productAmount"
+                                    name="productAmount"
+                                    type="number"
+                                    min="0"
+                                    class="form-control"
+                                    placeholder="Nhập vào mô tả sản phẩm"
+                                />
+                            </div>
+                        </div>
+                        <div class="col col6">
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <label>Khuyến mãi</label>
+                                    <input
+                                        id="discount"
+                                        name="discount"
+                                        type="number"
+                                        class="form-control"
+                                        placeholder="Nhập vào khuyến mãi"
+                                    />
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Shipping</label>
+                                    <select
+                                        class="form-control member-form"
+                                        id="freeShip"
+                                        name="freeShip"
+                                    >
+                                        <option
+                                            value="none"
+                                            selected=""
+                                            disabled=""
+                                        >
+                                            Chọn Freeship
+                                        </option>
+                                        <option value="1">Freeship</option>
+                                        <option value="0">No Freeship</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Đánh giá</label>
+                                    <label>Số sao</label>
+                                    <input
+                                        id="rating"
+                                        name="rating"
+                                        type="number"
+                                        class="form-control rate-input"
+                                        placeholder="Nhập vào số sao"
+                                        max="5"
+                                        min="0"
+                                    />
+                                </div>
+                                <div class="form-group">
+                                    <label>Số bình luận</label>
+                                    <input
+                                        id="comments"
+                                        type="text"
+                                        class="form-control rate-input"
+                                        placeholder="Nhập vào số bình
+                                    luận"
+                                    />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Hình Ảnh</label>
+                                <input
+                                    id="productImg"
+                                    name="productImg"
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Nhập vào hình sản phẩm"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer"></div>
+            </form>
+        </div>
+    </div>
+</div>

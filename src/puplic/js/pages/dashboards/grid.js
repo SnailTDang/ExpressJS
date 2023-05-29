@@ -1,0 +1,159 @@
+function getDetailProduct(id) {
+    $.ajax({
+        url: `http://localhost:8080/detail-product/${id}`,
+        method: "GET",
+        dataType: "JSON",
+        success: function (data) {
+            const {
+                productID,
+                productName,
+                productPrice,
+                productImg,
+                productAmount,
+                rating,
+                discount,
+                freeShip,
+                productBrand,
+                productType,
+            } = data;
+            $("#productName").val(productName);
+            $("#productPrice").val(productPrice);
+            $("#productImg").val(productImg);
+            $("#freeShip").val(freeShip);
+            $("#productBrand").val(productBrand);
+            $("#productType").val(productType);
+            $("#productAmount").val(productAmount);
+            $("#rating").val(rating);
+            $("#discount").val(discount);
+            $("#myModal .modal-footer").html(`
+                    <button onclick="updateProduct('${productID}')" type="button" 
+                    class="btn btn-success" id="capnhatSP">
+                    Cập nhật sản phẩm
+                    </button>`);
+        },
+        error: function (response) {
+            // alert("server error occured");
+            console.log(response);
+        },
+    });
+}
+const renderImg = (params) => {
+    const element = document.createElement("div");
+    const imageElement = document.createElement("img");
+    if (params.value) {
+        imageElement.src = params.value;
+    } else {
+        imageElement.src =
+            "https://www.ag-grid.com/example-assets/weather/fire-minus.png";
+    }
+    element.className = "cell-img";
+    element.appendChild(imageElement);
+    return element;
+};
+
+const columnDefs = [
+    {
+        field: "productID",
+        headerName: "Product ID",
+        resizable: true,
+        width: "auto",
+        maxWidth: 100,
+    },
+    {
+        field: "productName",
+        headerName: "Name",
+        resizable: true,
+        suppressSizeToFit: true,
+        width: 350,
+    },
+    {
+        field: "productPrice",
+        headerName: "Price",
+        resizable: true,
+        cellRenderer: (params) => {
+            return params.value.toLocaleString("VN-vi") + "đ";
+        },
+    },
+    { field: "productAmount", headerName: "Amount", resizable: true },
+    { field: "productBrand", headerName: "Brand", resizable: true },
+    { field: "typeName", headerName: "Type", resizable: true },
+    {
+        field: "discount",
+        headerName: "Discount",
+        resizable: true,
+        cellRenderer: (params) => {
+            return params.value + "%";
+        },
+    },
+    {
+        field: "productImg",
+        headerName: "Picture",
+        resizable: false,
+        autoHeight: true,
+        sortable: false,
+        cellRenderer: renderImg,
+    },
+];
+const gridOptions = {
+    resizable: true,
+    initialWidth: "30%",
+    wrapHeaderText: true,
+    autoHeaderHeight: true,
+    columnDefs,
+    defaultColDef: { sortable: true, filter: true },
+    rowSelection: "multiple",
+    animateRows: true,
+    pagination: true,
+    paginationPageSize: 10,
+    // paginationAutoPageSize: true,
+    onCellDoubleClicked: async (params) => {
+        await getDetailProduct(params.data.productID);
+        $("#myModal").modal("show");
+    },
+    excelStyles: [
+        {
+            id: "productName",
+            alignment: {
+                vertical: "Center",
+                horizontal: "Center",
+            },
+        },
+    ],
+};
+document.addEventListener("DOMContentLoaded", function () {
+    const eGridDiv = document.getElementById("myGrid");
+    new agGrid.Grid(eGridDiv, gridOptions);
+    eGridDiv.style.setProperty("width", "100%");
+    $.ajax({
+        url: `http://localhost:8080/products`,
+        method: "GET",
+        dataType: "JSON",
+        success: function (data) {
+            gridOptions.api.setRowData(data);
+            gridOptions.api.sizeColumnsToFit();
+            gridOptions.api.deselectAll();
+            const footer = document.getElementById("ag-26");
+            const pageSize = document.createElement("select");
+            pageSize.setAttribute("id", "page-size");
+            pageSize.setAttribute("onChange", "onPageSizeChanged()");
+            pageSize.setAttribute("class", "member-form");
+            pageSize.innerHTML = appendPageSizeOnFooter([10, 20, 30]);
+            footer.appendChild(pageSize);
+        },
+    });
+});
+
+function onPageSizeChanged() {
+    let value = document.getElementById("page-size").value;
+    gridOptions.api.paginationSetPageSize(Number(value));
+}
+
+const appendPageSizeOnFooter = (arr) => {
+    let optionsHTML = "";
+    arr.forEach((e) => {
+        optionsHTML += `<option value="${e}">${e}</option>`;
+    });
+    return optionsHTML;
+};
+
+renderDataGrid(10);
