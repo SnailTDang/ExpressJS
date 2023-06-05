@@ -1,11 +1,11 @@
 import createPoolDatabase from "../config/connectDatabase";
 import { productDetailDto } from "../models/products/product.helper";
 
-const queryGetAll = `CALL get_all_products()`;
+const queryGetAll = `CALL sp_get_all_products()`;
 
-const queryCreate = `CALL create_new_product(?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+const queryCreate = `CALL sp_create_new_product(?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
-const queryGetDetail = `CALL get_detail_product(?)`;
+const queryGetDetail = `CALL sp_get_detail_product(?)`;
 
 const queryDelete = `UPDATE products_list SET DEL_FLG = 1 WHERE PRODUCT_ID = ?`;
 
@@ -15,8 +15,14 @@ class ProductsController {
     };
 
     getAllProducts = async (req, res) => {
-        const [results, fields] = await createPoolDatabase.query(queryGetAll);
-        res.json(results[0]);
+        try {
+            const [results, fields] = await createPoolDatabase.query(
+                queryGetAll
+            );
+            res.json(results[0]);
+        } catch (error) {
+            res.status(500).json(error);
+        }
     };
     createProduct = async (req, res) => {
         const {

@@ -1,42 +1,3 @@
-function getDetailProduct(id) {
-    $.ajax({
-        url: `http://localhost:8080/detail-product/${id}`,
-        method: "GET",
-        dataType: "JSON",
-        success: function (data) {
-            const {
-                productID,
-                productName,
-                productPrice,
-                productImg,
-                productAmount,
-                rating,
-                discount,
-                freeShip,
-                productBrand,
-                productType,
-            } = data;
-            $("#productName").val(productName);
-            $("#productPrice").val(productPrice);
-            $("#productImg").val(productImg);
-            $("#freeShip").val(freeShip);
-            $("#productBrand").val(productBrand);
-            $("#productType").val(productType);
-            $("#productAmount").val(productAmount);
-            $("#rating").val(rating);
-            $("#discount").val(discount);
-            $("#myModal .modal-footer").html(`
-                    <button onclick="updateProduct('${productID}')" type="button" 
-                    class="btn btn-success" id="capnhatSP">
-                    Cập nhật sản phẩm
-                    </button>`);
-        },
-        error: function (response) {
-            // alert("server error occured");
-            console.log(response);
-        },
-    });
-}
 const renderImg = (params) => {
     const element = document.createElement("div");
     const imageElement = document.createElement("img");
@@ -54,7 +15,7 @@ const renderImg = (params) => {
 const columnDefs = [
     {
         field: "productID",
-        headerName: "Product ID",
+        headerName: "ID",
         resizable: true,
         width: "auto",
         maxWidth: 100,
@@ -76,7 +37,7 @@ const columnDefs = [
     },
     { field: "productAmount", headerName: "Amount", resizable: true },
     { field: "productBrand", headerName: "Brand", resizable: true },
-    { field: "typeName", headerName: "Type", resizable: true },
+    { field: "productType", headerName: "Type", resizable: true },
     {
         field: "discount",
         headerName: "Discount",
@@ -90,6 +51,7 @@ const columnDefs = [
         headerName: "Picture",
         resizable: false,
         autoHeight: true,
+        filter: false,
         sortable: false,
         cellRenderer: renderImg,
     },
@@ -104,8 +66,7 @@ const gridOptions = {
     rowSelection: "multiple",
     animateRows: true,
     pagination: true,
-    paginationPageSize: 10,
-    // paginationAutoPageSize: true,
+    // paginationPageSize: 50,
     onCellDoubleClicked: async (params) => {
         await getDetailProduct(params.data.productID);
         $("#myModal").modal("show");
@@ -120,7 +81,8 @@ const gridOptions = {
         },
     ],
 };
-document.addEventListener("DOMContentLoaded", function () {
+
+const getDataTableGrid = () => {
     const eGridDiv = document.getElementById("myGrid");
     new agGrid.Grid(eGridDiv, gridOptions);
     eGridDiv.style.setProperty("width", "100%");
@@ -129,6 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
         method: "GET",
         dataType: "JSON",
         success: function (data) {
+            gridOptions.api.setServerSideDatasource(data);
             gridOptions.api.setRowData(data);
             gridOptions.api.sizeColumnsToFit();
             gridOptions.api.deselectAll();
@@ -137,16 +100,20 @@ document.addEventListener("DOMContentLoaded", function () {
             pageSize.setAttribute("id", "page-size");
             pageSize.setAttribute("onChange", "onPageSizeChanged()");
             pageSize.setAttribute("class", "member-form");
-            pageSize.innerHTML = appendPageSizeOnFooter([10, 20, 30]);
+            pageSize.innerHTML = appendPageSizeOnFooter([50, 100, 200]);
             footer.appendChild(pageSize);
         },
     });
-});
+};
 
-function onPageSizeChanged() {
+const onPageSizeChanged = () => {
+    gridOptions.api.showLoadingOverlay();
     let value = document.getElementById("page-size").value;
-    gridOptions.api.paginationSetPageSize(Number(value));
-}
+    setTimeout(() => {
+        gridOptions.api.paginationSetPageSize(Number(value));
+        gridOptions.api.hideOverlay();
+    }, 500);
+};
 
 const appendPageSizeOnFooter = (arr) => {
     let optionsHTML = "";
@@ -156,4 +123,45 @@ const appendPageSizeOnFooter = (arr) => {
     return optionsHTML;
 };
 
-renderDataGrid(10);
+const getDetailProduct = (id) => {
+    $.ajax({
+        url: `http://localhost:8080/detail-product/${id}`,
+        method: "GET",
+        dataType: "JSON",
+        success: function (data) {
+            const {
+                productID,
+                productName,
+                productPrice,
+                productImg,
+                productAmount,
+                rating,
+                discount,
+                freeShip,
+                productBrand,
+                productType,
+            } = data;
+            console.log(productType);
+            $("#productName").val(productName);
+            $("#productPrice").val(productPrice);
+            $("#productImg").val(productImg);
+            $("#freeShip").val(freeShip);
+            $("#productBrand").val(productBrand);
+            $("#productType").val(productType);
+            $("#productAmount").val(productAmount);
+            $("#rating").val(rating);
+            $("#discount").val(discount);
+            $("#myModal .modal-footer").html(`
+                    <button onclick="updateProduct('${productID}')" type="button" 
+                    class="btn btn-success" id="capnhatSP">
+                    Cập nhật sản phẩm
+                    </button>`);
+        },
+        error: function (response) {
+            // alert("server error occured");
+            console.log(response);
+        },
+    });
+};
+
+getDataTableGrid();
